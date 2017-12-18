@@ -416,8 +416,14 @@ void Tree::bootstrapWithStrata() {
   {
    // std::cout << s <<  << std::endl;
    // Make sure we're sampling within indices that correspond to just this strata
-    std::uniform_int_distribution<size_t> unif_dist(min_idx.at(s), max_idx.at(s) - 1);
-    size_t draw = unif_dist(random_number_generator);
+   size_t draw;
+    if (min_idx.at(s) == max_idx.at(s))
+      draw = min_idx.at(s);
+    else
+    {
+      std::uniform_int_distribution<size_t> unif_dist(min_idx.at(s), max_idx.at(s));
+      draw = unif_dist(random_number_generator);
+    }
 
     if (std::find(encountered_strata.begin(), encountered_strata.end(), strata.at(draw)) != encountered_strata.end())  
     {
