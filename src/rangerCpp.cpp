@@ -74,7 +74,7 @@ Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string depen
   // This is necessary so that when sampling later on, each random number generated should lie within a particular strata.
   // This way there will be fewer (or no) wasted iterations (hopefully).
   // These vectors are also stored into Forest.h and Tree.h.
-  std::vector<uint> min_idx (unique_strata.size(), 1000000), max_idx (unique_strata.size(), -1);
+  std::vector<uint> min_idx (unique_strata.size(), 100000), max_idx (unique_strata.size(), -1);
   for (int ii = 0; ii < unique_strata.size(); ii++)
   {
     for (int jj = 0; jj < strata.size(); jj++)
@@ -91,6 +91,7 @@ Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string depen
     }
   }
 
+  std::cout << "Checkpoint 1" << std::endl;
 
 
   Rcpp::List result;
