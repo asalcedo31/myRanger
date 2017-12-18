@@ -46,6 +46,8 @@
 
 class Forest {
 public:
+  std::vector<uint> strata;
+
   Forest();
   virtual ~Forest();
 

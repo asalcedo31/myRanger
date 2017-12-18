@@ -177,7 +177,8 @@
 ##' @import utils
 ##' @importFrom Matrix Matrix
 ##' @export
-ranger <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NULL,
+ranger <- function(strata = NULL,
+                   formula = NULL, data = NULL, num.trees = 500, mtry = NULL,
                    importance = "none", write.forest = TRUE, probability = FALSE,
                    min.node.size = NULL, replace = TRUE, 
                    sample.fraction = ifelse(replace, 1, 0.632), 
@@ -626,9 +627,9 @@ ranger <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NULL,
   
   ## Clean up
   rm("data.selected")
-
+  print
   ## Call Ranger
-  result <- rangerCpp(treetype, dependent.variable.name, data.final, variable.names, mtry,
+  result <- rangerCpp(strata, treetype, dependent.variable.name, data.final, variable.names, mtry,
                       num.trees, verbose, seed, num.threads, write.forest, importance.mode,
                       min.node.size, split.select.weights, use.split.select.weights,
                       always.split.variables, use.always.split.variables,

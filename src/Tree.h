@@ -38,6 +38,8 @@
 
 class Tree {
 public:
+  std::vector<uint> strata;
+
   Tree();
 
   // Create from loaded forest
@@ -98,6 +100,8 @@ protected:
   void permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations);
 
   virtual double computePredictionAccuracyInternal() = 0;
+
+  void bootstrapWithStrata();
 
   void bootstrap();
   void bootstrapWithoutReplacement();

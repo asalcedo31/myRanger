@@ -104,7 +104,15 @@ void ForestClassification::growInternal() {
   trees.reserve(num_trees);
   for (size_t i = 0; i < num_trees; ++i) {
     trees.push_back(new TreeClassification(&class_values, &response_classIDs));
+    trees[i]->strata = this->strata;
   }
+
+
+// std::cout << "List of strata in ForestClassification.cpp: " << std::endl;
+// for (int ii = 0; ii < strata.size(); ii++)
+//   std::cout << strata[ii] << ", " << std::flush;
+// std::cout << std::endl;
+
 }
 
 void ForestClassification::predictInternal() {

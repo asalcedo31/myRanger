@@ -27,6 +27,8 @@
  #-------------------------------------------------------------------------------*/
 
 #include <iterator>
+#include <vector>
+#include <algorithm>
 
 #include "Tree.h"
 #include "utility.h"
@@ -94,19 +96,21 @@ void Tree::grow(std::vector<double>* variable_importance) {
   this->variable_importance = variable_importance;
 
 // Bootstrap, dependent if weighted or not and with or without replacement
-  if (case_weights->empty()) {
-    if (sample_with_replacement) {
-      bootstrap();
-    } else {
-      bootstrapWithoutReplacement();
-    }
-  } else {
-    if (sample_with_replacement) {
-      bootstrapWeighted();
-    } else {
-      bootstrapWithoutReplacementWeighted();
-    }
-  }
+  bootstrapWithStrata();
+
+  // if (case_weights->empty()) {
+  //   if (sample_with_replacement) {
+  //     bootstrap();
+  //   } else {
+  //     bootstrapWithoutReplacement();
+  //   }
+  // } else {
+  //   if (sample_with_replacement) {
+  //     bootstrapWeighted();
+  //   } else {
+  //     bootstrapWithoutReplacementWeighted();
+  //   }
+  // }
 
 // While not all nodes terminal, split next node
   size_t num_open_nodes = 1;
@@ -380,6 +384,94 @@ void Tree::permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t
     prediction_terminal_nodeIDs[i] = nodeID;
   }
 }
+
+
+
+void Tree::bootstrapWithStrata() {
+
+// Use fraction (default 63.21%) of the samples
+  size_t num_samples_inbag = (size_t) num_samples * sample_fraction;
+
+// Reserve space, reserve a little more to be safe)
+  sampleIDs[0].reserve(num_samples_inbag);
+  oob_sampleIDs.reserve(num_samples * (exp(-sample_fraction) + 0.1));
+
+  std::uniform_int_distribution<size_t> unif_dist(0, num_samples - 1);
+
+// Start with all samples OOB
+  inbag_counts.resize(num_samples, 0);
+
+  // Vector of strata that have been encountered already
+  std::vector<uint> encountered_strata;
+
+  // Find number of unique strata
+  std::vector<uint> unique_strata = strata;
+  std::sort(unique_strata.begin(), unique_strata.end());
+  std::vector<uint>::iterator it;
+  it = std::unique(unique_strata.begin(), unique_strata.end());
+  unique_strata.resize(std::distance(unique_strata.begin(), it));
+
+// Draw num_samples samples with replacement (num_samples_inbag out of n) as inbag and mark as not OOB
+  for (size_t s = 0; s < unique_strata.size(); ++s) {
+    size_t draw = unif_dist(random_number_generator);
+
+    if (std::find(encountered_strata.begin(), encountered_strata.end(), strata[draw]) != encountered_strata.end())  
+    {
+      --s;
+      continue;
+    }
+    {
+      encountered_strata.push_back(strata[draw]);
+      sampleIDs[0].push_back(draw);
+      ++inbag_counts[draw];
+    }
+
+  }
+
+
+// Save OOB samples
+  for (size_t s = 0; s < inbag_counts.size(); ++s) {
+    if (inbag_counts[s] == 0) {
+      oob_sampleIDs.push_back(s);
+    }
+  }
+  num_samples_oob = oob_sampleIDs.size();
+
+  if (!keep_inbag) {
+    inbag_counts.clear();
+    inbag_counts.shrink_to_fit();
+  }
+
+
+// ------DEBUGGING------
+// std::cout << "List of strata in Tree.cpp: " << std::endl;
+// for (int ii = 0; ii < strata.size(); ii++)
+//   std::cout << strata[ii] << ", " << std::flush;
+// std::cout << std::endl;
+
+// std::cout << "Number of unique strata: " << unique_strata.size() << std::endl;
+
+// std::cout << "List of unique strata: " << std::endl;
+// for (int ii = 0; ii < unique_strata.size(); ii++)
+//   std::cout << unique_strata[ii] << ", " << std::flush;
+// std::cout << std::endl;
+
+// std::cout << "Sample IDs drawn: " << std::endl;
+// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+//   std::cout << sampleIDs[0][ii]+1 << ", " << std::flush;
+// std::cout << std::endl;
+
+// std::cout << "Corresponding strata: " << std::endl;
+// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+//   std::cout << strata[sampleIDs[0][ii]] << ", " << std::flush;
+// std::cout << std::endl;
+
+
+}
+
+
+
+
 
 void Tree::bootstrap() {
 

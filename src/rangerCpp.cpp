@@ -43,7 +43,7 @@
  
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
-Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
+Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string dependent_variable_name,
     Rcpp::NumericMatrix input_data, std::vector<std::string> variable_names, uint mtry, uint num_trees, bool verbose,
     uint seed, uint num_threads, bool write_forest, uint importance_mode_r, uint min_node_size,
     std::vector<std::vector<double>>& split_select_weights, bool use_split_select_weights,
@@ -54,6 +54,12 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
     std::vector<double>& case_weights, bool use_case_weights, bool predict_all, 
     bool keep_inbag, double sample_fraction, double alpha, double minprop, bool holdout, uint prediction_type_r, 
     uint num_random_splits, Eigen::SparseMatrix<double> sparse_data, bool use_sparse_data) {
+
+
+// std::cout << "List of strata in rangerCpp.cpp: " << std::endl;
+// for (int ii = 0; ii < strata.size(); ii++)
+//   std::cout << strata[ii] << ", " << std::flush;
+// std::cout << std::endl;
 
   Rcpp::List result;
   Forest* forest = 0;
@@ -127,6 +133,7 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
     PredictionType prediction_type = (PredictionType) prediction_type_r;
 
     // Init Ranger
+    forest->strata = strata;
     forest->initR(dependent_variable_name, data, mtry, num_trees, verbose_out, seed, num_threads,
         importance_mode, min_node_size, split_select_weights, always_split_variable_names, status_variable_name,
         prediction_mode, sample_with_replacement, unordered_variable_names, save_memory, splitrule, case_weights, 
