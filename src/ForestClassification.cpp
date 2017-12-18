@@ -102,9 +102,13 @@ void ForestClassification::initInternal(std::string status_variable_name) {
 
 void ForestClassification::growInternal() {
   trees.reserve(num_trees);
-  for (size_t i = 0; i < num_trees; ++i) {
+  for (size_t i = 0; i < num_trees; ++i)
+  {
     trees.push_back(new TreeClassification(&class_values, &response_classIDs));
     trees[i]->strata = this->strata;
+    trees[i]->unique_strata = this->unique_strata;
+    trees[i]->min_idx = this->min_idx;
+    trees[i]->max_idx = this->max_idx;
   }
 
 

@@ -39,6 +39,8 @@
 class Tree {
 public:
   std::vector<uint> strata;
+  std::vector<uint> unique_strata;
+  std::vector<uint> min_idx, max_idx;
 
   Tree();
 

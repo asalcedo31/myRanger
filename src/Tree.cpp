@@ -396,7 +396,6 @@ void Tree::bootstrapWithStrata() {
   sampleIDs[0].reserve(num_samples_inbag);
   oob_sampleIDs.reserve(num_samples * (exp(-sample_fraction) + 0.1));
 
-  std::uniform_int_distribution<size_t> unif_dist(0, num_samples - 1);
 
 // Start with all samples OOB
   inbag_counts.resize(num_samples, 0);
@@ -405,14 +404,17 @@ void Tree::bootstrapWithStrata() {
   std::vector<uint> encountered_strata;
 
   // Find number of unique strata
-  std::vector<uint> unique_strata = strata;
-  std::sort(unique_strata.begin(), unique_strata.end());
-  std::vector<uint>::iterator it;
-  it = std::unique(unique_strata.begin(), unique_strata.end());
-  unique_strata.resize(std::distance(unique_strata.begin(), it));
+  // std::vector<uint> unique_strata = strata;
+  // std::sort(unique_strata.begin(), unique_strata.end());
+  // std::vector<uint>::iterator it;
+  // it = std::unique(unique_strata.begin(), unique_strata.end());
+  // unique_strata.resize(std::distance(unique_strata.begin(), it));
 
 // Draw num_samples samples with replacement (num_samples_inbag out of n) as inbag and mark as not OOB
-  for (size_t s = 0; s < unique_strata.size(); ++s) {
+  for (size_t s = 0; s < unique_strata.size(); ++s) 
+  {
+    // Make sure we're sampling within indices that correspond to just this strata
+    std::uniform_int_distribution<size_t> unif_dist(min_idx[s], max_idx[s] - 1);
     size_t draw = unif_dist(random_number_generator);
 
     if (std::find(encountered_strata.begin(), encountered_strata.end(), strata[draw]) != encountered_strata.end())  
@@ -456,15 +458,17 @@ void Tree::bootstrapWithStrata() {
 //   std::cout << unique_strata[ii] << ", " << std::flush;
 // std::cout << std::endl;
 
-// std::cout << "Sample IDs drawn: " << std::endl;
-// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
-//   std::cout << sampleIDs[0][ii]+1 << ", " << std::flush;
-// std::cout << std::endl;
+std::cout << "\n*****************************" << std::endl;
+std::cout << "Sample IDs drawn: " << std::endl;
+for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+  std::cout << sampleIDs[0][ii]+1 << ", " << std::flush;
+std::cout << std::endl;
 
-// std::cout << "Corresponding strata: " << std::endl;
-// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
-//   std::cout << strata[sampleIDs[0][ii]] << ", " << std::flush;
-// std::cout << std::endl;
+std::cout << "Corresponding strata: " << std::endl;
+for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+  std::cout << strata[sampleIDs[0][ii]] << ", " << std::flush;
+std::cout << std::endl;
+std::cout << "*****************************\n" << std::endl;
 
 
 }

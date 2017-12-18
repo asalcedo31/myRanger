@@ -61,6 +61,38 @@ Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string depen
 //   std::cout << strata[ii] << ", " << std::flush;
 // std::cout << std::endl;
 
+  // Find number of unique strata, and create a vector of unique strata.
+  // This is done right at the start because it only needs to be done once per run.
+  // These variables are also copied into the Forest.h and Tree.h classes for use in there.
+  std::vector<uint> unique_strata = strata;
+  std::sort(unique_strata.begin(), unique_strata.end());
+  std::vector<uint>::iterator it;
+  it = std::unique(unique_strata.begin(), unique_strata.end());
+  unique_strata.resize(std::distance(unique_strata.begin(), it));
+
+  // Now loop through the strata vector to find the min and max data index for each strata.
+  // This is necessary so that when sampling later on, each random number generated should lie within a particular strata.
+  // This way there will be fewer (or no) wasted iterations (hopefully).
+  // These vectors are also stored into Forest.h and Tree.h.
+  std::vector<uint> min_idx (unique_strata.size(), 1000000), max_idx (unique_strata.size(), -1);
+  for (int ii = 0; ii < unique_strata.size(); ii++)
+  {
+    for (int jj = 0; jj < strata.size(); jj++)
+    {
+      if (strata[jj] == unique_strata[ii])
+      {
+        if (jj <= min_idx[ii])
+          min_idx[ii] = jj;
+        if (jj >= max_idx[ii])
+          max_idx[ii] = jj;
+      }
+      else
+        continue;
+    }
+  }
+
+
+
   Rcpp::List result;
   Forest* forest = 0;
   Data* data = 0;
@@ -134,6 +166,9 @@ Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string depen
 
     // Init Ranger
     forest->strata = strata;
+    forest->unique_strata = unique_strata;
+    forest->min_idx = min_idx;
+    forest->max_idx = max_idx;
     forest->initR(dependent_variable_name, data, mtry, num_trees, verbose_out, seed, num_threads,
         importance_mode, min_node_size, split_select_weights, always_split_variable_names, status_variable_name,
         prediction_mode, sample_with_replacement, unordered_variable_names, save_memory, splitrule, case_weights, 
