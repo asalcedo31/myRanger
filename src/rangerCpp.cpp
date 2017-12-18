@@ -89,9 +89,10 @@ Rcpp::List rangerCpp(std::vector<uint>& strata, uint treetype, std::string depen
       else
         continue;
     }
+    std::cout << min_idx[ii] << ", " << max_idx[ii] << std::endl;
   }
 
-  std::cout << "Checkpoint 1" << std::endl;
+  // std::cout << "Checkpoint 1" << std::endl;
 
 
   Rcpp::List result;

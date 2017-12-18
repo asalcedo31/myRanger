@@ -409,12 +409,13 @@ void Tree::bootstrapWithStrata() {
   // std::vector<uint>::iterator it;
   // it = std::unique(unique_strata.begin(), unique_strata.end());
   // unique_strata.resize(std::distance(unique_strata.begin(), it));
-  std::cout << "Checkpoint 2" << std::endl;
+  // std::cout << "Checkpoint 2" << std::endl;
 
 // Draw num_samples samples with replacement (num_samples_inbag out of n) as inbag and mark as not OOB
   for (size_t s = 0; s < unique_strata.size(); ++s) 
   {
-    // Make sure we're sampling within indices that correspond to just this strata
+   // std::cout << s <<  << std::endl;
+   // Make sure we're sampling within indices that correspond to just this strata
     std::uniform_int_distribution<size_t> unif_dist(min_idx.at(s), max_idx.at(s) - 1);
     size_t draw = unif_dist(random_number_generator);
 
@@ -431,7 +432,6 @@ void Tree::bootstrapWithStrata() {
 
   }
 
-  std::cout << "Checkpoint 3" << std::endl;
 
 // Save OOB samples
   for (size_t s = 0; s < inbag_counts.size(); ++s) {
