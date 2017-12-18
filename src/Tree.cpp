@@ -427,7 +427,7 @@ void Tree::bootstrapWithStrata() {
 
     if (std::find(encountered_strata.begin(), encountered_strata.end(), strata.at(draw)) != encountered_strata.end())  
     {
-      --s;
+      // --s;
       continue;
     }
     {
