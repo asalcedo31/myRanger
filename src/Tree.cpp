@@ -466,17 +466,17 @@ void Tree::bootstrapWithStrata() {
 //   std::cout << unique_strata[ii] << ", " << std::flush;
 // std::cout << std::endl;
 
-std::cout << "\n*****************************" << std::endl;
-std::cout << "Sample IDs drawn: " << std::endl;
-for (int ii = 0; ii < sampleIDs[0].size(); ii++)
-  std::cout << sampleIDs[0][ii]+1 << ", " << std::flush;
-std::cout << std::endl;
+// std::cout << "\n*****************************" << std::endl;
+// std::cout << "Sample IDs drawn: " << std::endl;
+// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+//   std::cout << sampleIDs[0][ii]+1 << ", " << std::flush;
+// std::cout << std::endl;
 
-std::cout << "Corresponding strata: " << std::endl;
-for (int ii = 0; ii < sampleIDs[0].size(); ii++)
-  std::cout << strata[sampleIDs[0][ii]] << ", " << std::flush;
-std::cout << std::endl;
-std::cout << "*****************************\n" << std::endl;
+// std::cout << "Corresponding strata: " << std::endl;
+// for (int ii = 0; ii < sampleIDs[0].size(); ii++)
+//   std::cout << strata[sampleIDs[0][ii]] << ", " << std::flush;
+// std::cout << std::endl;
+// std::cout << "*****************************\n" << std::endl;
 
 
 }
