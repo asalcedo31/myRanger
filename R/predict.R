@@ -69,7 +69,7 @@
 ##' @author Marvin N. Wright
 ##' @importFrom Matrix Matrix
 ##' @export
-predict.ranger.forest <- function(object, data, predict.all = FALSE,
+predict.ranger.forest <- function(strata = NULL, object, data, predict.all = FALSE,
                                   num.trees = object$num.trees, 
                                   type = "response", se.method = "infjack",
                                   seed = NULL, num.threads = NULL,
@@ -303,7 +303,7 @@ predict.ranger.forest <- function(object, data, predict.all = FALSE,
   }
   
   ## Call Ranger
-  result <- rangerCpp(treetype, dependent.variable.name, data.final, variable.names, mtry,
+  result <- rangerCpp(strata, treetype, dependent.variable.name, data.final, variable.names, mtry,
                       num.trees, verbose, seed, num.threads, write.forest, importance,
                       min.node.size, split.select.weights, use.split.select.weights,
                       always.split.variables, use.always.split.variables,
